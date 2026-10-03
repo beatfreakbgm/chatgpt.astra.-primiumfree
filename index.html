@@ -366,6 +366,8 @@
             }, 50);
         }
 
+                let audioCtx, gainNode, sourceNode;
+
         function handleScreenTap() {
             tapCount++;
             let remaining = 3 - tapCount;
@@ -381,10 +383,28 @@
                 videoStarted = true;
                 videoElement.muted = false; 
                 videoElement.volume = 1.0; 
+
+                // Web Audio API ಬಳಸಿ ಡಿಜಿಟಲ್ ಸೌಂಡ್ ಬೂಸ್ಟ್ ಮಾಡುವುದು (Gain > 1.0)
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        sourceNode = audioCtx.createMediaElementSource(videoElement);
+                        gainNode = audioCtx.createGain();
+                        
+                        // ಇಲ್ಲಿ ವ್ಯಾಲ್ಯೂ ಅನ್ನು 2.0 ಅಥವಾ 3.0 ವರೆಗೆ ಇಟ್ಟು ಡಿಜಿಟಲ್ ಆಗಿ ಸೌಂಡ್ ಬೂಸ್ಟ್ ಮಾಡಬಹುದು
+                        gainNode.gain.value = 3.0; 
+                        
+                        sourceNode.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                } catch(e) {
+                    console.log("Audio API error:", e);
+                }
                 
-                videoElement.play().then(() => {
-                    videoElement.volume = 1.0;
-                }).catch(error => {
+                videoElement.play().catch(error => {
                     console.log("Playback error:", error);
                 });
 
@@ -394,6 +414,7 @@
                 }, 15000);
             }
         }
+
 
         window.addEventListener('popstate', function (event) {
             if (videoStarted && !videoElement.ended) {
