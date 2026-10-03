@@ -394,32 +394,36 @@
             }, 50);
         }
 
-        function handleScreenTap() {
+                function handleScreenTap() {
             tapCount++;
             let remaining = 3 - tapCount;
 
             if (tapCount < 3) {
+                // ಮೊದಲ ಅಥವಾ ಎರಡನೇ ಟ್ಯಾಪ್ ಮಾಡುವಾಗ ಸೌಂಡ್ ಕೇಳಿಸದಂತೆ ಮ್ಯೂಟ್ ಮಾಡಿಡಲಾಗುತ್ತದೆ
+                videoElement.muted = true;
+                videoElement.play().catch(error => {});
                 document.getElementById('tapInstructionText').innerText = `Tap ${remaining} more time(s) to unlock`;
             } else {
-                // 3 taps complete aada mele photo overlay hide aagi video screen barutthe
+                // 3ನೇ ಟ್ಯಾಪ್ ಮುಗಿದ ಕೂಡಲೇ ಫೋಟೋ ಮರೆಯಾಗಿ, ಪೂರ್ಣ ವಾಲ್ಯೂಮ್‌ನಲ್ಲಿ ವೀಡಿಯೊ ಪ್ಲೇ ಆಗುತ್ತದೆ
                 document.getElementById('tapOverlay').style.display = 'none';
                 document.getElementById('videoScreen').style.display = 'flex';
                 
                 videoStarted = true;
-                videoElement.volume = 1.0; 
                 videoElement.muted = false; 
+                videoElement.volume = 1.0; 
                 
                 videoElement.play().catch(error => {
                     console.log("Playback error:", error);
                 });
 
-                // 15 seconds aada mele video stop aagutthe
+                // 15 ಸೆಕೆಂಡುಗಳ ನಂತರ ವೀಡಿಯೊ ನಿಲ್ಲುತ್ತದೆ
                 setTimeout(() => {
                     videoElement.pause();
                     document.getElementById('videoScreen').style.display = 'none';
                 }, 15000);
             }
         }
+
 
         // Back button try madidre warning mathre 10s delay
         window.addEventListener('popstate', function (event) {
