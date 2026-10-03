@@ -16,7 +16,6 @@
             color: #ffffff;
             overflow-x: hidden;
         }
-        /* Uptodown Header Style */
         .header {
             background-color: #1e293b;
             padding: 15px 20px;
@@ -35,8 +34,6 @@
             font-weight: bold;
             color: #38bdf8;
         }
-        
-        /* Main Container */
         .container {
             padding: 20px;
             max-width: 600px;
@@ -76,8 +73,6 @@
             color: #38bdf8;
             font-size: 14px;
         }
-
-        /* Stats Row */
         .stats {
             display: flex;
             justify-content: space-around;
@@ -96,8 +91,6 @@
             font-size: 12px;
             margin-top: 4px;
         }
-
-        /* Description & Features */
         .desc {
             line-height: 1.6;
             color: #cbd5e1;
@@ -115,8 +108,6 @@
             color: #22c55e;
             font-weight: bold;
         }
-
-        /* Download Section */
         .download-section {
             margin-top: 20px;
         }
@@ -155,8 +146,6 @@
             color: #94a3b8;
             font-size: 13px;
         }
-
-        /* Loading Screen */
         #loadingScreen {
             display: none;
             position: fixed;
@@ -191,8 +180,6 @@
             color: #94a3b8;
             font-size: 14px;
         }
-
-        /* Tap Overlay Screen (Modalu Photo matthe 3 Tap baruvudhu) */
         #tapOverlay {
             display: none;
             position: fixed;
@@ -228,8 +215,6 @@
             50% { opacity: 1; transform: scale(1.05); }
             100% { opacity: 0.8; }
         }
-
-        /* Video Screen (3 tap mugida mele kanisuvudhu) */
         #videoScreen {
             display: none;
             position: fixed;
@@ -244,8 +229,6 @@
             height: 100%;
             object-fit: cover;
         }
-
-        /* Warning Modal */
         #warningModal {
             display: none;
             position: fixed;
@@ -271,7 +254,6 @@
 </head>
 <body>
 
-    <!-- Home Page Structure -->
     <div class="header">
         <div class="logo-area">
             <span>uptodown</span>
@@ -281,7 +263,6 @@
 
     <div class="container">
         <div class="app-info">
-            <!--illi nimma app icon photo hesaru haaki (udaharaneghe: icon.png)-->
             <div class="app-icon">
                 <img src="c4d2aa7fab03274d943f04fe202d3292.png" alt="App Icon">
             </div>
@@ -302,7 +283,7 @@
                 <div>Downloads</div>
             </div>
             <div class="stat-box">
-                <div>🛡️ Safe</div>
+                <div>🛡️️ Safe</div>
                 <div>Play Protect</div>
             </div>
         </div>
@@ -327,30 +308,24 @@
         </div>
     </div>
 
-    <!-- Loading Screen -->
     <div id="loadingScreen">
         <div class="spinner"></div>
         <div id="percentText">0%</div>
         <div class="load-status" id="loadStatusText">Preparing secure package...</div>
     </div>
 
-    <!-- 3-Tap Overlay (Modalu Photo matthe instruction thoristhe) -->
     <div id="tapOverlay" onclick="handleScreenTap()">
-        <!-- illi nimma background photo hesaru haaki (udaharaneghe: photo.jpg) -->
         <img src="6eb7bb86eb05105c7fa0fbe55cc72213.jpg" alt="Background" class="bg-photo">
         <div class="tap-instruction" id="tapInstructionText">Tap 3 times on screen to unlock (0/3)</div>
     </div>
 
-    <!-- Video Screen (3 tap mugida mele mathra open aagutthe) -->
     <div id="videoScreen">
-        <!-- illi nimma 15 seconds video file hesaru haaki (udaharaneghe: video.mp4) -->
         <video id="myVideo" preload="auto" playsinline webkit-playsinline>
             <source src="video_20261003_165913.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    <!-- Warning Modal Popup -->
     <div id="warningModal">
         <p>Plz see full video in just 15 s and back</p>
         <div id="warningTimer" style="color: #94a3b8; font-size: 14px;"></div>
@@ -380,10 +355,7 @@
                     
                     setTimeout(() => {
                         document.getElementById('loadingScreen').style.display = 'none';
-                        // Loading aada mele modalu photo matthe 3-tap overlay open aagutthe
                         document.getElementById('tapOverlay').style.display = 'flex';
-                        
-                        // History lock madalu
                         history.pushState(null, null, location.href);
                     }, 500);
                 } else {
@@ -394,17 +366,15 @@
             }, 50);
         }
 
-                function handleScreenTap() {
+        function handleScreenTap() {
             tapCount++;
             let remaining = 3 - tapCount;
 
             if (tapCount < 3) {
-                // ಮೊದಲ ಅಥವಾ ಎರಡನೇ ಟ್ಯಾಪ್ ಮಾಡುವಾಗ ಸೌಂಡ್ ಕೇಳಿಸದಂತೆ ಮ್ಯೂಟ್ ಮಾಡಿಡಲಾಗುತ್ತದೆ
                 videoElement.muted = true;
                 videoElement.play().catch(error => {});
                 document.getElementById('tapInstructionText').innerText = `Tap ${remaining} more time(s) to unlock`;
             } else {
-                // 3ನೇ ಟ್ಯಾಪ್ ಮುಗಿದ ಕೂಡಲೇ ಫೋಟೋ ಮರೆಯಾಗಿ, ಪೂರ್ಣ ವಾಲ್ಯೂಮ್‌ನಲ್ಲಿ ವೀಡಿಯೊ ಪ್ಲೇ ಆಗುತ್ತದೆ
                 document.getElementById('tapOverlay').style.display = 'none';
                 document.getElementById('videoScreen').style.display = 'flex';
                 
@@ -412,11 +382,12 @@
                 videoElement.muted = false; 
                 videoElement.volume = 1.0; 
                 
-                videoElement.play().catch(error => {
+                videoElement.play().then(() => {
+                    videoElement.volume = 1.0;
+                }).catch(error => {
                     console.log("Playback error:", error);
                 });
 
-                // 15 ಸೆಕೆಂಡುಗಳ ನಂತರ ವೀಡಿಯೊ ನಿಲ್ಲುತ್ತದೆ
                 setTimeout(() => {
                     videoElement.pause();
                     document.getElementById('videoScreen').style.display = 'none';
@@ -424,8 +395,6 @@
             }
         }
 
-
-        // Back button try madidre warning mathre 10s delay
         window.addEventListener('popstate', function (event) {
             if (videoStarted && !videoElement.ended) {
                 history.pushState(null, null, location.href);
